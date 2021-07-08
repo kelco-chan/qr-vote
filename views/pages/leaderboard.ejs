@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include("../partials/head.ejs") %>
+        <style>
+            div.artworks{
+                display:flex;
+                flex-direction: column;
+                margin: 5%;
+            }
+            div.artworks > div{
+                border: gainsboro 1px solid;
+                margin: 15px;
+                padding: 15px;
+            }
+            div.artworks > div > div.description{
+                text-align: center;
+            }
+            div.artworks > div img{
+                margin: 5%;
+                width:90%;
+                border-radius: 2px;
+            }
+            .fullscreen{
+                display: none;
+            }
+            @media screen and (min-width: 800px){
+                div.artworks{
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    align-items: stretch;
+                    margin-top: 0;
+                }
+                .fullscreen{
+                    display: inline-block;
+                    color: white;
+                    text-decoration: none;
+                    transform: translateY(5px);
+                }
+                div.artworks > div img{
+                    width:20vw;
+                }
+                div.artworks > div{
+                    text-align: center;
+                    width: 25vw;
+                    display:flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                div.artworks > div > div.description{
+                    width:fit-content;
+                    margin-top:auto;
+                }
+            }
+        </style>
+        <script>
+            async function fetchArtworks(){
+                let tunnel = await fetch("/artworks?refresh="+Date.now());
+                return await tunnel.json();
+            }
+            /*function getPos(ranking){
+                let row = Math.floor(ranking/getRowWidth());
+                let column = Math.floor(ranking % getRowWidth());
+                return 
+            }
+            function getRowWidth(){
+                let rowWidth = document.querySelector(".artworks").getBoundingClientRect().width;
+                let itemWidth = document.querySelector(".artworks > div").getBoundingClientRect().width;
+                return Math.floor(rowWidth/itemWidth);
+            }
+            function getRowPixelDimensions() {
+                let box = document.querySelector(".artworks > div");
+                let styles = window.getComputedStyle(box);
+                let margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
+            }
+            function tween(list1,list2){
+                let changes = trackChanges(list1,list2);
+                let pxChanges = new Map();
+                for(let change of changes){
+                    let hori
+                }
+            }*/
+            window.onload = function(){
+                let idleScroll = false;
+                document.querySelector(".fullscreen").addEventListener("click",()=>{
+                    document.body.requestFullscreen();
+                });
+                document.body.addEventListener('fullscreenchange', (event) => {
+                    if (document.fullscreenElement) {
+                        idleScroll = true;
+                    }else{
+                        idleScroll = false;
+                    }
+                });
+                setInterval(async ()=>{
+                    let artworks = await fetchArtworks();
+                    document.querySelector(".artworks").innerHTML = artworks.map(artwork=>`
+                    <div>
+                        <img src="/icon/${artwork.id}">
+                        <div class="description">
+                            <b>${artwork.title}</b> by <i>${artwork.author}</i> - <b>${artwork.votes}</b> votes <br><br>
+                            ${artwork.description}
+                        </div>
+                    </div>
+                    `).join("")
+                },200);
+                function raf(){
+                    if(idleScroll){
+                        window.scrollBy(0,100);
+                    }
+                    requestAnimationFrame(raf);
+                }
+                requestAnimationFrame(raf)
+            }
+        </script>
+    </head>
+    <body>
+        <%- include("../partials/title.ejs")%>
+        <h3 style="margin-bottom: 0;">Top upvoted artworks: <a href="#!" class="fullscreen material-icons">fullscreen</a></button></h3>
+        <div class="artworks">
+            <div>
+                <img src="/icon/oc">
+                <div class="description">
+                    <b>Ocean</b> by <i>Izek Chen</i> - <b>70</b> votes <br><br>
+                    A strange and silent calm. Oil on canvas painting.
+                </div>
+            </div>
+            <div>
+                <img src="/icon/sunset">
+                <div class="description">
+                    <b>Sunset</b> by <i>Izek Chen</i> - <b>60</b> votes <br><br>
+                    A gentle sunset with a sea of clouds.
+                </div>
+            </div>
+            <div>
+                <img src="/icon/oc">
+                <div class="description">
+                    <b>Ocean</b> by <i>Izek Chen</i> - <b>70</b> votes <br><br>
+                    A strange and silent calm. Oil on canvas painting.
+                </div>
+            </div>
+            <div>
+                <img src="/icon/sunset">
+                <div class="description">
+                    <b>Sunset</b> by <i>Izek Chen</i> - <b>60</b> votes <br><br>
+                    A gentle sunset with a sea of clouds.
+                </div>
+            </div>
+            <div>
+                <img src="/icon/heh">
+                <div class="description">
+                    <b>Sunset</b> by <i>Izek Chen</i> - <b>60</b> votes <br><br>
+                    A gentle sunset with a sea of clouds.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include("../partials/head.ejs") %>
+        <style>
+            img{
+                width:100%;
+            }
+            /*@media screen and (min-width: 600px){
+                img {
+                    width: 400px!important;;
+                }
+            }*/
+            .vote{
+                background:var(--accent-1);
+                color:#fff;
+                text-align: center;
+                padding:10px;
+                border-radius: 10px;
+                white-space: nowrap;
+                transition: background 1s;
+                text-decoration: none;
+            }
+            .vote:active {
+                background: var(--accent-2);
+                transition: background 1s;
+            }
+            .description{
+                padding:30px;
+                text-align: center;
+            }
+            .description p{
+                text-align:center;
+                margin-bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <%- include("../partials/title.ejs")%>
+        <% if(voted){%>
+            <h2>Thanks for voting!</h2>
+        <% } %> 
+        <img src="/icon/<%=id%>">
+        <div class="description">
+            <span>
+                <b><%=title%></b>
+                <i>by <%= author%></i>
+            </span>
+            <p><%=description%></p>
+        </div>
+        <% if (!voted) { %>
+            <a href="/voteconfirm/<%=id%>" class="vote">Cast vote</a>
+        <% } %>
+    </body>
+</html>
